@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KJ Price Calculator</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; background: #eef2f3; }
+    .container { max-width: 480px; margin: auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+    h2 { text-align: center; color: #222; margin-bottom: 20px; }
+    label { font-weight: bold; display:block; margin-top:10px; }
+    input { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #bbb; border-radius: 6px; }
+    button { width: 100%; padding: 12px; background: linear-gradient(135deg, #28a745, #218838); color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; margin-top:15px; font-weight: bold; }
+    button:hover { background: linear-gradient(135deg, #34c759, #218838); }
+    .result { margin-top: 20px; padding: 15px; border-radius: 8px; background: #f9f9f9; font-size: 17px; color: #111; line-height: 1.6; border: 1px solid #ddd; }
+    .highlight { color: #28a745; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>KJ Price Calculator</h2>
+
+    <label for="rate">1 KJ ka rate (₹):</label>
+    <input type="number" id="rate" placeholder="1 KJ ka rate dalen">
+
+    <label for="quantity">Kitne KJ chahiye:</label>
+    <input type="number" id="quantity" placeholder="KJ ki quantity dalen">
+
+    <label for="amount">Kitne Rupaye (₹):</label>
+    <input type="number" id="amount" placeholder="Rupaye dalen">
+
+    <label for="discount">Discount (%) :</label>
+    <input type="number" id="discount" placeholder="Jaise 10">
+
+    <label for="gst">GST (%) :</label>
+    <input type="number" id="gst" placeholder="Jaise 18">
+
+    <button onclick="calculate()">Calculate</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function calculate() {
+      let rate = parseFloat(document.getElementById('rate').value);
+      let quantity = parseFloat(document.getElementById('quantity').value);
+      let amount = parseFloat(document.getElementById('amount').value);
+      let discount = parseFloat(document.getElementById('discount').value) || 0;
+      let gst = parseFloat(document.getElementById('gst').value) || 0;
+
+      let output = "";
+
+      if(rate) {
+        // CASE 1: Quantity diya hai
+        if(quantity) {
+          let total = rate * quantity;
+          let discountAmount = (total * discount) / 100;
+          total -= discountAmount;
+          let gstAmount = (total * gst) / 100;
+          total += gstAmount;
+          output += "🔹 <span class='highlight'>Total Price:</span> ₹" + total.toFixed(2) + "<br>";
+        }
+
+        // CASE 2: Amount diya hai
+        if(amount) {
+          let kj = amount / rate;
+          if (kj < 1) {
+            let grams = kj * 1000;
+            output += "🔹 <span class='highlight'>" + amount + "₹ me:</span> " + grams.toFixed(2) + " g<br>";
+          } else {
+            output += "🔹 <span class='highlight'>" + amount + "₹ me:</span> " + kj.toFixed(2) + " KJ<br>";
+          }
+        }
+
+        // Fixed calculations
+        let kjIn250 = 250 / rate;
+        let kjIn100 = 100 / rate;
+        if (kjIn250 < 1) {
+          output += "🔹 <span class='highlight'>250₹ me:</span> " + (kjIn250*1000).toFixed(2) + " g<br>";
+        } else {
+          output += "🔹 <span class='highlight'>250₹ me:</span> " + kjIn250.toFixed(2) + " KJ<br>";
+        }
+        if (kjIn100 < 1) {
+          output += "🔹 <span class='highlight'>100₹ me:</span> " + (kjIn100*1000).toFixed(2) + " g<br>";
+        } else {
+          output += "🔹 <span class='highlight'>100₹ me:</span> " + kjIn100.toFixed(2) + " KJ<br>";
+        }
+
+      } else {
+        output = "<span class='highlight'>⚠️ Please enter 1 KJ ka rate.</span>";
+      }
+
+      document.getElementById('result').innerHTML = output;
+    }
+  </script>
+</body>
+</html>
